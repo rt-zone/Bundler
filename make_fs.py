@@ -5,14 +5,14 @@ import os, sys
 BLOCK_SIZE  = 4096
 BLOCK_COUNT = 212
 
-EXCLUDE_DIRS  = {'.git', '.github', '__pycache__', '.venv'}
-EXCLUDE_FILES = {'.gitignore', 'README.md', 'readme.md', 'LICENSE'}
+EXCLUDE_DIRS  = {'.git', '.github', '__pycache__', '.venv', '.vscode'}
+EXCLUDE_FILES = {'.gitignore', 'README.md', 'readme.md', 'LICENSE','.micropico'}
 EXCLUDE_EXTS  = {'.pyc'}
 
 fs = littlefs.LittleFS(block_size=BLOCK_SIZE, block_count=BLOCK_COUNT)
 
 libs_dir = sys.argv[1]   # pass your libs/ folder
-build_dir = sys.argv[2] # build-directory
+
 for root, dirs, files in os.walk(libs_dir):
     dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]  # prune excluded dirs
     for name in files:
@@ -36,8 +36,7 @@ for root, dirs, files in os.walk(libs_dir):
                 lf.write(f.read())
         print(f"  + {remote_path}")
 
-build_path = os.path.join(build_dir, "filesystem.bin")
-with open(build_path, "wb") as f:
+with open("filesystem.bin", "wb") as f:
     f.write(bytes(fs.context.buffer))
 
 print(f"filesystem.bin written ({len(fs.context.buffer)} bytes)")
